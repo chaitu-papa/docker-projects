@@ -12,3 +12,14 @@ Volumes
      docker run -it --name devtest04 -v /root/docker-development:/docker centos /bin/bash
      docker run -it --name devtest04 -v /root/docker-development:/docker:ro centos /bin/bash
       docker run -it --name devtest06 --volumes-from devtest05  centos /bin/bash
+Networking
+		docker network ls
+		docker network create my-net
+		docker network inspect a709b57cbdc5
+		docker network create my-net
+		docker network inspect a709b57cbdc5
+		docker run -d -p 8082:8080 --network "my-net" amitvashist7/hello-openshift:v3
+		docker network create --driver=bridge --subnet=172.28.0.0/16 --ip-range=172.28.5.0/24 --gateway=172.28.5.254 mybr0
+		docker run -d -p 8081:8080 --network "mybr0" amitvashist7/hello-openshift:v2
+		docker run -d -p 8083:8080   amitvashist7/hello-openshift:v1
+		ip addr
