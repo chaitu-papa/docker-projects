@@ -23,3 +23,435 @@ Networking
 		docker run -d -p 8081:8080 --network "mybr0" amitvashist7/hello-openshift:v2
 		docker run -d -p 8083:8080   amitvashist7/hello-openshift:v1
 		ip addr
+-------------------------
+OC Commands
+
+from Super User 067 to All Participants:
+# -*- mode: ruby -*-
+# vi: set ft=ruby :
+# See README.md for details
+#VAGRANTFILE_API_VERSION = "2"
+Vagrant.configure(2) do |config|
+  config.vm.define "acs"  do |ctl|
+    ctl.vm.synced_folder '.', '/vagrant', disabled: true
+    ctl.vm.box = "centos/7"
+        ctl.vm.hostname = "acs"
+        ctl.vm.network "private_network", ip: "172.31.0.10"
+        ctl.vm.provider "virtualbox" do |vb|
+          vb.memory = 5048
+        end
+  end
+end
+
+from Super User 067 to All Participants:
+https://vagrantcloud.com/centos/boxes/7/versions/1809.01/providers/virtualbox.box
+from Rakesh Nallamothu to All Participants:
+No Amit .. not yet solved
+from Rakesh Nallamothu to All Participants:
+https://vagrantcloud.com/centos/boxes/7/versions/1809.01/providers/virtualbox.box
+
+
+from KrishnaChaitanya Papa to All Participants:
+yes
+from Super User 067 to All Participants:
+yum install epel-release vim git net-tools docker-1.13.1 -y 
+from Super User 067 to All Participants:
+wget https://github.com/openshift/origin/releases/download/v3.7.1/openshift-origin-server-v3.7.1-ab0f056-linux-64bit.tar.gz
+from Super User 067 to All Participants:
+[root@acs ~]# grep -i INSECURE /etc/sysconfig/docker
+INSECURE_REGISTRY='--insecure-registry 192.168.0.0/16'
+[root@acs ~]#
+from Super User 067 to All Participants:
+ mv openshift-origin-server-v3.7.1-ab0f056-linux-64bit.tar.gz /tmp/
+from Super User 067 to All Participants:
+cd openshift-*
+from KrishnaChaitanya Papa to All Participants:
+can you slow
+from KrishnaChaitanya Papa to All Participants:
+please
+from Super User 067 to All Participants:
+mv k* o* /usr/local/sbin/
+from KrishnaChaitanya Papa to All Participants:
+can you please be little slow
+from Super User 067 to All Participants:
+# vim /usr/local/bin/start_openshift.sh
+from Super User 067 to All Participants:
+[root@acs ~]# cat /usr/local/bin/start_openshift.sh
+#!/bin/bash
+cd /opt/openshift/
+openshift start --public-master='https://172.31.0.10:8443' --master='https://172.31.0.10:8443'
+[root@acs ~]#
+from Super User 067 to All Participants:
+chmod +x /usr/local/bin/start_openshift.sh
+from Super User 067 to All Participants:
+[root@acs ~]# cat  /etc/systemd/system/openshift.service
+[Unit]
+Description=OpenShift Origin Server
+[Service]
+Type=simple
+ExecStart=/usr/local/bin/start_openshift.sh[Unit]
+Description=OpenShift Origin Server
+[Service]
+Type=simple
+ExecStart=/usr/local/bin/start_openshift.sh
+[root@acs ~]#
+from Super User 067 to All Participants:
+# mkdir /opt/openshift
+from Super User 067 to All Participants:
+# systemctl daemon-reload
+from KrishnaChaitanya Papa to All Participants:
+wait pls
+from Arunkumar Durairaj to All Participants:
+in progress... 
+from Rakesh Nallamothu to All Participants:
+no 
+from Rakesh Nallamothu to All Participants:
+sorry not to you amit
+from Super User 067 to All Participants:
+# systemctl start openshift
+from Sambasivam Sethuraman to All Participants:
+chwekcing
+from Thara R to All Participants:
+[root@acs tmp]# systemctl status openshift.service
+● openshift.service - OpenShift Origin Server
+   Loaded: loaded (/etc/systemd/system/openshift.service; static; vendor preset: disabled)
+   Active: failed (Result: exit-code) since Fri 2018-10-12 06:00:19 UTC; 1s ago
+  Process: 25144 ExecStart=/usr/local/bin/start_openshift.sh (code=exited, status=127)
+ Main PID: 25144 (code=exited, status=127)
+ 
+from Sambasivam Sethuraman to All Participants:
+[root@acs openshift-origin-server-v3.7.1-ab0f056-linux-64bit]# docker version
+Client:
+ Version:         1.13.1
+ API version:     1.26
+ Package version:
+Cannot connect to the Docker daemon at unix:///var/run/docker.sock. Is the docker daemon running?
+from Sambasivam Sethuraman to All Participants:
+can you please paste history
+from Super User 067 to All Participants:
+ 1  ls
+    2  yum install epel-release vim git net-tools docker-1.13.1 -y
+    3  ls
+    4  vim /etc/sysconfig/docker
+    5  grep -i INSECURE /etc/sysconfig/docker
+    6  systemctl restart docker.service
+    7  docker --version
+    8  docker version
+    9  setenforce 0
+   10  ls
+   11  mv openshift-origin-server-v3.7.1-ab0f056-linux-64bit.tar.gz /tmp/
+   12  ls
+   13  cd /tmp/
+   14  ls
+   15  tar -zxvf openshift-origin-server-v3.7.1-ab0f056-linux-64bit.tar.gz
+   16  ls
+   17  cd openshift-origin-server-v3.7.1-ab0f056-linux-64bit/
+   18  ls
+   19  mv k* o* /usr/local/sbin/
+   20  cd
+   21  ls
+   22  vim /usr/local/bin/start_openshift.sh
+   23  cat /usr/local/bin/start_openshift.sh
+   24  chmod +x /usr/local/bin/start_openshift.sh
+   25  vim /etc/systemd/system/openshift.service
+   26  cat  /etc/systemd/system/openshift.service
+   27  mkdir /opt/openshift
+   28  systemctl deamon-reload
+   29  systemctl daemon-reload
+   30  systemctl start openshift
+from Sambasivam Sethuraman to All Participants:
+got the command, 
+from Sambasivam Sethuraman to All Participants:
+systemctl restart docker.service
+from Sambasivam Sethuraman to All Participants:
+thq
+from Nirmal Marisetty to All Participants:
+pls paste opeshift.service file
+from Super User 067 to All Participants:
+PermitRootLogin 
+from Nirmal Marisetty to All Participants:
+ok
+from Super User 067 to All Participants:
+PasswordAuthentication 
+from Super User 067 to All Participants:
+PasswordAuthentication 
+from Super User 067 to All Participants:
+[root@acs ~]# cat /etc/systemd/system/openshift.service
+[Unit]
+Description=OpenShift Origin Server
+[Service]
+Type=simple
+ExecStart=/usr/local/bin/start_openshift.sh
+[root@acs ~]#
+from Nirmal Marisetty to All Participants:
+thanks
+from Super User 067 to All Participants:
+[root@acs ~]# cat /usr/local/bin/start_openshift.sh
+#!/bin/bash
+cd /opt/openshift/
+openshift start --public-master='https://172.31.0.10:8443' --master='https://172.31.0.10:8443'
+[root@acs ~]#
+from Super User 067 to All Participants:
+git clone https://github.com/amitvashist7/openshift-origin.git
+from Super User 067 to All Participants:
+21  sed -i 's/10.160.0.3/10.160.0.2/g' inventory.ini 
+   22  cat inventory.ini 
+   23  sed -i 's/10.160.0.5/10.160.0.3/g' inventory.ini 
+from Arunkumar Durairaj to All Participants:
+yes
+from Thara R to All Participants:
+yes
+from Super User 067 to All Participants:
+[root@acs ~]# grep -i export .bashrc
+export KUBECONFIG=/opt/openshift/openshift.local.config/master/admin.kubeconfig
+export CURL_CA_BUNDLE=/opt/openshift/openshift.local.config/master/ca.crt
+[root@acs ~]#
+from Super User 067 to All Participants:
+source .bashrc
+from Super User 067 to All Participants:
+oc login -u system:admin https://172.31.0.10:8443
+from Sambasivam Sethuraman to All Participants:
+system:admin is default one?
+from Arunkumar Durairaj to All Participants:
+export command missing on adminkubeconfig entry..
+from Sambasivam Sethuraman to All Participants:
+export before KUBECONFIG is missing in .bashrc
+from Super User 067 to All Participants:
+export KUBECONFIG=/opt/openshift/openshift.local.config/master/admin.kubeconfig
+export CURL_CA_BUNDLE=/opt/openshift/openshift.local.config/master/ca.crt
+from Super User 067 to All Participants:
+# oc adm registry
+from Super User 067 to All Participants:
+# oc adm policy add-scc-to-user hostnetwork -z router
+from Super User 067 to All Participants:
+# oc adm router
+from Arunkumar Durairaj to All Participants:
+yup
+
+from Super User 067 to All Participants:
+git clone https://github.com/amitvashist7/openshift-origin.git
+
+from KrishnaChaitanya Papa to All Participants:
+[root@openshift-master hello-openshift]# oc create -f hello-project.json
+Error from server (Forbidden): error when creating "hello-project.json": User "admin" cannot create projects at the cluster scope: User "admin" cannot create projects at the cluster scope (post projects)
+
+from KrishnaChaitanya Papa to All Participants:
+Using project "sample-project".
+[root@openshift-master hello-openshift]# oc create -f hello-project.json
+Error from server (Forbidden): error when creating "hello-project.json": User "system" cannot create projects at the cluster scope: User "system" cannot create projects at the cluster scope (post projects)
+from KrishnaChaitany
+from Super User 067 to All Participants:
+7  cd openshift-origin/
+   38  ls
+   39  cd examples/
+   40  ls
+   41  cd hello-openshift/
+   42  ls
+   43  cat hello-project.json 
+   44  oc craete -f hello-project.json 
+   45  oc create -f hello-project.json 
+   46  ls
+   47  oc get projects
+   48  oc project hello-openshift-project
+   49  oc get projects
+   50  history | grep git 
+   51  pwd
+   52  ls
+
+from Super User 067 to All Participants:
+ 57  cd first-app/
+   58  ls
+   59  vim helloworld.yml 
+   60  oc get pods 
+   61  oc create -f helloworld.yml 
+   62  oc get pods 
+   63  kubectl get pods 
+   64  oc get pods 
+   65  oc get pods -o wide 
+   66  curl 10.129.0.122
+   67  oc describe pod nodehelloworld
+   68  curl 10.129.0.122:8080
+   69  ls
+   70  oc create -f ../hello-openshift/hello-pod.json 
+   71  oc get pods 
+   72  oc get pods -o wide 
+   73  curl 10.128.0.33
+   74  curl 10.128.0.33:8080
+   75  curl 10.129.0.122:8080
+from Thara R to All Participants:
+its good 
+from Super User 067 to All Participants:
+C:\Users\AmitVashist\Desktop\Training_Labs\OS                
+λ cat Vagrantfile                                            
+# -*- mode: ruby -*-                                         
+# vi: set ft=ruby :                                          
+# See README.md for details                                  
+                                                             
+#VAGRANTFILE_API_VERSION = "2"                               
+Vagrant.configure(2) do |config|                             
+                                                             
+  config.vm.define "acs"  do |ctl|                           
+    ctl.vm.synced_folder '.', '/vagrant', disabled: true     
+    ctl.vm.box = "centos/7"                                  
+        ctl.vm.hostname = "acs"                              
+        ctl.vm.network "private_network", ip: "172.31.0.10"  
+        ctl.vm.provider "virtualbox" do |vb|                 
+          vb.memory = 5048                             
+from Super User 067 to All Participants:
+C:\Users\AmitVashist\Desktop\Training_Labs\OS
+λ cat Vagrantfile
+# -*- mode: ruby -*-
+# vi: set ft=ruby :
+# See README.md for details
+#VAGRANTFILE_API_VERSION = "2"
+Vagrant.configure(2) do |config|
+  config.vm.define "acs"  do |ctl|
+    ctl.vm.synced_folder '.', '/vagrant', disabled: true
+    ctl.vm.box = "centos/7"
+        ctl.vm.hostname = "acs"
+        ctl.vm.network "private_network", ip: "172.31.0.10"
+        ctl.vm.provider "virtualbox" do |vb|
+          vb.memory = 5048
+        end
+  end
+end
+C:\Users\AmitVashist\Desktop\Training_Labs\OS
+from Super User 067 to All Participants:
+git clone https://github.com/amitvashist7/openshift-origin.git
+from Super User 067 to All Participants:
+Enable The SSH Password Less Auth between Mater & repective Nodes 
+from Super User 067 to All Participants:
+Replace the & Dommain name for respective nodes & Master
+
+
+from Super User 067 to All Participants:
+oc delete pod hello-openshift nodehelloworld
+from Super User 067 to All Participants:
+cat replication-controller/helloworld-repl-controller.yml 
+from Super User 067 to All Participants:
+oc create -f replication-controller/helloworld-repl-controller.ym
+from Super User 067 to All Participants:
+oc get pods
+from Super User 067 to All Participants:
+oc get rc
+from Super User 067 to All Participants:
+oc scale --replicas=5 rc helloworld-controller
+from Super User 067 to All Participants:
+oc scale --replicas=1 rc helloworld-controller
+from Super User 067 to All Participants:
+oc get pods
+from Super User 067 to All Participants:
+ oc delete rc helloworld-controller
+from Sambasivam Sethuraman to All Participants:
+when delete rc, pods also getting deleted?
+from Sambasivam Sethuraman to All Participants:
+before lunch we created some pods right that also would have rc
+from Sambasivam Sethuraman to All Participants:
+ok 
+from Sambasivam Sethuraman to All Participants:
+
+from Super User 067 to All Participants:
+oc create -f deployment/helloworld.ym
+from Super User 067 to All Participants:
+oc get deployments 
+from Super User 067 to All Participants:
+oc get deployments -o wide 
+from Super User 067 to All Participants:
+oc get pods
+from Super User 067 to All Participants:
+oc get pods -o wide
+from Sambasivam Sethuraman to All Participants:
+what happen if I kill one of the pod
+from Super User 067 to All Participants:
+136  oc get deployment
+  137  oc expose deployment helloworld-deployment
+  138  oc get svc 
+  139  curl 172.30.31.54:8080
+  140  oc get pods -o wide 
+  141  oc describe svc helloworld-deployment
+  142* 
+  143  oc scale --replicas=5 deployment helloworld-deployment
+  144  oc get pods -o wide 
+  145  oc describe svc helloworld-deployment
+  146  oc scale --replicas=2 deployment helloworld-deployment
+  147  oc describe svc helloworld-deployment
+from Kanwar Deepika to All Participants:
+
+ye splz
+from Super User 067 to All Participants:
+161  oc set image deployment helloworld-deployment okd-demo=amitvashist7/hello-openshift:v2
+  162  oc rollout status  deployment helloworld-deployment 
+  163  curl 172.30.31.54:8080
+  164  oc set image deployment helloworld-deployment okd-demo=amitvashist7/hello-openshift:v3
+  165  oc rollout status  deployment helloworld-deployment 
+  166  curl 172.30.31.54:8080
+  167  oc rollout history deployment helloworld-deployment
+  168  oc rollout history deployment helloworld-deployment --revsion=1
+  169  oc rollout history deployment helloworld-deployment --revision=1
+  170  oc rollout history deployment helloworld-deployment
+  171  oc rollout history deployment helloworld-deployment --revision=1
+  172  oc rollout history deployment helloworld-deployment --revision=2
+  173  oc rollout history deployment helloworld-deployment --revision=3
+  174  oc rollout history deployment helloworld-deployment --revision=4
+  175  curl 172.30.31.54:8080
+  176  oc rollout undo deployment hellow
+from Umashankar Karthikeyan to All Participants:
+We need full history
+from Super User 067 to All Participants:
+177  oc rollout status deployment helloworld-deployment 
+  178  oc get pods 
+  179  curl 172.30.31.54:8080
+  180  oc rollout history deployment helloworld-deployment
+  181  oc rollout undo deployment helloworld-deployment 
+  182  oc rollout history deployment helloworld-deployment
+  183  curl 172.30.31.54:8080
+  184  oc rollout history deployment helloworld-deployment --to-revision=2
+  185  oc rollout undo deployment helloworld-deployment --to-revision=2
+  186  oc rollout history deployment helloworld-deployment
+  187  curl 172.30.31.54:8080
+
+
+from Super User 067 to All Participants:
+190  oc get nodes --show-labels
+  191  oc label nodes master  hardware=virtual
+  192  oc label nodes worker01    hardware=virtual
+  193  oc label nodes worker01    env=prod
+  194  oc label nodes master    env=uat
+  195  oc get deployment 
+  196  oc delete deployment helloworld-deployment
+  197  oc get svc 
+  198  oc delete svc helloworld-deployment
+  199  ls
+  200  cat deployment/helloworld-nodeselector.yml 
+  201  oc create -f deployment/helloworld-nodeselector.yml 
+  202  oc get pods 
+  203  oc get pods -o wide 
+  204  vi deployment/helloworld-nodeselector.yml
+  205  oc create -f deployment/helloworld-nodeselector.yml 
+  206  oc get pods 
+  207  oc get pods -o wide 
+  208  oc describe pod helloworld-deployment-3-87bbdcb4f-f9qsg
+  209  oc get pods -o wide 
+  210  oc label nodes master    cloud=gcp
+  211  oc get pods -o wide 
+  212  cat deployment/helloworld.yml 
+  213  cat deployment/helloworld-nodeselector.yml 
+  214  oc get nodes --show-labels
+  215  oc get 
+from Super User 067 to All Participants:
+https://github.com/amitvashist7/openshift-origin.git
+
+221  cat deployment/helloworld-healthcheck.yml 
+  222  oc create -f deployment/helloworld-healthcheck.yml 
+  223  oc get pods 
+  224  oc get pods -o wide 
+  225  oc describe pod helloworld-deployment-c999748cb-49p4g | grep -i live 
+  226  oc get pods -o wide 
+  227* oc expose deployment hellowo
+  228  oc get svc 
+  229  curl 172.30.89.253:8080
+  230  oc edit deployment helloworld-deployment
+  231  oc get pods 
+  232  oc describe pod helloworld-deployment-76b976f7fb-j8q65 | grep -i live 
+  233  oc get pods 
+  234  curl 172.30.89.253:8080
